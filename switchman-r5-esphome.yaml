@@ -1,0 +1,149 @@
+blueprint:
+  name: Sonoff BLE Remote (Text Sensor)
+  description: Cấu hình 18 hành động cho remote Sonoff 6 nút dựa trên Text Sensor của ESPHome.
+  domain: automation
+  input:
+    remote_sensor:
+      name: Sonoff Text Sensor
+      description: Chọn cảm biến text (ví dụ text_sensor.sonoff_remote_action)
+      selector:
+        entity:
+          domain: text_sensor
+    
+    # Tạo các nhóm nút (Dưới đây là ví dụ cho Nút 1 và Nút 2, bạn copy tiếp cho đủ 6 nút)
+    btn_1_single:
+      name: Nút 1 - Nhấn đơn
+      default: []
+      selector: { action: {} }
+    btn_1_double:
+      name: Nút 1 - Nhấn đúp
+      default: []
+      selector: { action: {} }
+    btn_1_long:
+      name: Nút 1 - Nhấn giữ
+      default: []
+      selector: { action: {} }
+
+    btn_2_single:
+      name: Nút 2 - Nhấn đơn
+      default: []
+      selector: { action: {} }
+    btn_2_double:
+      name: Nút 2 - Nhấn đúp
+      default: []
+      selector: { action: {} }
+    btn_2_long:
+      name: Nút 2 - Nhấn giữ
+      default: []
+      selector: { action: {} }
+
+    btn_3_single:
+      name: Nút 3 - Nhấn đơn
+      default: []
+      selector: { action: {} }
+    btn_3_double:
+      name: Nút 3 - Nhấn đúp
+      default: []
+      selector: { action: {} }
+    btn_3_long:
+      name: Nút 3 - Nhấn giữ
+      default: []
+      selector: { action: {} }
+
+    btn_4_single:
+      name: Nút 4 - Nhấn đơn
+      default: []
+      selector: { action: {} }
+    btn_4_double:
+      name: Nút 4 - Nhấn đúp
+      default: []
+      selector: { action: {} }
+    btn_4_long:
+      name: Nút 4 - Nhấn giữ
+      default: []
+      selector: { action: {} }
+
+    btn_5_single:
+      name: Nút 5 - Nhấn đơn
+      default: []
+      selector: { action: {} }
+    btn_5_double:
+      name: Nút 5 - Nhấn đúp
+      default: []
+      selector: { action: {} }
+    btn_5_long:
+      name: Nút 5 - Nhấn giữ
+      default: []
+      selector: { action: {} }
+
+    btn_6_single:
+      name: Nút 6 - Nhấn đơn
+      default: []
+      selector: { action: {} }
+    btn_6_double:
+      name: Nút 6 - Nhấn đúp
+      default: []
+      selector: { action: {} }
+    btn_6_long:
+      name: Nút 6 - Nhấn giữ
+      default: []
+      selector: { action: {} }
+
+mode: parallel
+max: 10
+
+trigger:
+  - platform: state
+    entity_id: !input remote_sensor
+
+condition:
+  # Chỉ chạy khi sensor khác rỗng (tránh chạy khi script reset sensor về "")
+  - condition: template
+    value_template: "{{ trigger.to_state.state != '' }}"
+
+action:
+  - variables:
+      action_val: "{{ trigger.to_state.state }}"
+  - choose:
+      # Nút 1
+      - conditions: "{{ action_val == '1_single' }}"
+        sequence: !input btn_1_single
+      - conditions: "{{ action_val == '1_double' }}"
+        sequence: !input btn_1_double
+      - conditions: "{{ action_val == '1_long' }}"
+        sequence: !input btn_1_long
+      # Nút 2
+      - conditions: "{{ action_val == '2_single' }}"
+        sequence: !input btn_2_single
+      - conditions: "{{ action_val == '2_double' }}"
+        sequence: !input btn_2_double
+      - conditions: "{{ action_val == '2_long' }}"
+        sequence: !input btn_2_long
+      # Nút 3
+      - conditions: "{{ action_val == '3_single' }}"
+        sequence: !input btn_3_single
+      - conditions: "{{ action_val == '3_double' }}"
+        sequence: !input btn_3_double
+      - conditions: "{{ action_val == '3_long' }}"
+        sequence: !input btn_3_long
+      # Nút 4
+      - conditions: "{{ action_val == '4_single' }}"
+        sequence: !input btn_4_single
+      - conditions: "{{ action_val == '4_double' }}"
+        sequence: !input btn_4_double
+      - conditions: "{{ action_val == '4_long' }}"
+        sequence: !input btn_4_long
+      # Nút 5
+      - conditions: "{{ action_val == '5_single' }}"
+        sequence: !input btn_5_single
+      - conditions: "{{ action_val == '5_double' }}"
+        sequence: !input btn_5_double
+      - conditions: "{{ action_val == '5_long' }}"
+        sequence: !input btn_5_long
+      # Nút 6
+      - conditions: "{{ action_val == '6_single' }}"
+        sequence: !input btn_6_single
+      - conditions: "{{ action_val == '6_double' }}"
+        sequence: !input btn_6_double
+      - conditions: "{{ action_val == '6_long' }}"
+        sequence: !input btn_6_long
