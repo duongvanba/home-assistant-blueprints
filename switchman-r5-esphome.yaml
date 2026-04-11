@@ -9,10 +9,7 @@ blueprint:
           selector:
             entity:
               domain: sensor # Dùng sensor thay vì text_sensor
-              integration: esphome
-              filter:
-                - attribute: icon
-                  value: "mdi:remote"
+              integration: esphome 
     
     # Tạo các nhóm nút (Dưới đây là ví dụ cho Nút 1 và Nút 2, bạn copy tiếp cho đủ 6 nút)
     btn_1_single:
