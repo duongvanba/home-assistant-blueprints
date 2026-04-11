@@ -1,92 +1,92 @@
 blueprint:
   name: Sonoff BLE Remote (Text Sensor)
-  description: Cấu hình 18 hành động cho remote Sonoff 6 nút dựa trên Text Sensor của ESPHome.
+  description: Automation for swithman R5
   domain: automation
   input:
       remote_sensor:
         name: Sonoff Sensor
-        description: Chọn cảm biến (sensor) có icon mdi:remote
+        description: Select text sensor
         selector:
           entity:
             domain: sensor
             integration: esphome
     
-    # Tạo các nhóm nút (Dưới đây là ví dụ cho Nút 1 và Nút 2, bạn copy tiếp cho đủ 6 nút)
+    # Button groups (Buttons 1–6, each with single/double/long press)
     btn_1_single:
-      name: Nút 1 - Nhấn đơn
+      name: Button 1 - Single Press
       default: []
       selector: { action: {} }
     btn_1_double:
-      name: Nút 1 - Nhấn đúp
+      name: Button 1 - Double Press
       default: []
       selector: { action: {} }
     btn_1_long:
-      name: Nút 1 - Nhấn giữ
+      name: Button 1 - Long Press
       default: []
       selector: { action: {} }
 
     btn_2_single:
-      name: Nút 2 - Nhấn đơn
+      name: Button 2 - Single Press
       default: []
       selector: { action: {} }
     btn_2_double:
-      name: Nút 2 - Nhấn đúp
+      name: Button 2 - Double Press
       default: []
       selector: { action: {} }
     btn_2_long:
-      name: Nút 2 - Nhấn giữ
+      name: Button 2 - Long Press
       default: []
       selector: { action: {} }
 
     btn_3_single:
-      name: Nút 3 - Nhấn đơn
+      name: Button 3 - Single Press
       default: []
       selector: { action: {} }
     btn_3_double:
-      name: Nút 3 - Nhấn đúp
+      name: Button 3 - Double Press
       default: []
       selector: { action: {} }
     btn_3_long:
-      name: Nút 3 - Nhấn giữ
+      name: Button 3 - Long Press
       default: []
       selector: { action: {} }
 
     btn_4_single:
-      name: Nút 4 - Nhấn đơn
+      name: Button 4 - Single Press
       default: []
       selector: { action: {} }
     btn_4_double:
-      name: Nút 4 - Nhấn đúp
+      name: Button 4 - Double Press
       default: []
       selector: { action: {} }
     btn_4_long:
-      name: Nút 4 - Nhấn giữ
+      name: Button 4 - Long Press
       default: []
       selector: { action: {} }
 
     btn_5_single:
-      name: Nút 5 - Nhấn đơn
+      name: Button 5 - Single Press
       default: []
       selector: { action: {} }
     btn_5_double:
-      name: Nút 5 - Nhấn đúp
+      name: Button 5 - Double Press
       default: []
       selector: { action: {} }
     btn_5_long:
-      name: Nút 5 - Nhấn giữ
+      name: Button 5 - Long Press
       default: []
       selector: { action: {} }
 
     btn_6_single:
-      name: Nút 6 - Nhấn đơn
+      name: Button 6 - Single Press
       default: []
       selector: { action: {} }
     btn_6_double:
-      name: Nút 6 - Nhấn đúp
+      name: Button 6 - Double Press
       default: []
       selector: { action: {} }
     btn_6_long:
-      name: Nút 6 - Nhấn giữ
+      name: Button 6 - Long Press
       default: []
       selector: { action: {} }
 
@@ -98,7 +98,7 @@ trigger:
     entity_id: !input remote_sensor
 
 condition:
-  # Chỉ chạy khi sensor khác rỗng (tránh chạy khi script reset sensor về "")
+  # Only run when sensor state is not empty (avoids triggering when sensor resets to "")
   - condition: template
     value_template: "{{ trigger.to_state.state != '' }}"
 
@@ -106,42 +106,42 @@ action:
   - variables:
       action_val: "{{ trigger.to_state.state }}"
   - choose:
-      # Nút 1
+      # Button 1
       - conditions: "{{ action_val == '1_single' }}"
         sequence: !input btn_1_single
       - conditions: "{{ action_val == '1_double' }}"
         sequence: !input btn_1_double
       - conditions: "{{ action_val == '1_long' }}"
         sequence: !input btn_1_long
-      # Nút 2
+      # Button 2
       - conditions: "{{ action_val == '2_single' }}"
         sequence: !input btn_2_single
       - conditions: "{{ action_val == '2_double' }}"
         sequence: !input btn_2_double
       - conditions: "{{ action_val == '2_long' }}"
         sequence: !input btn_2_long
-      # Nút 3
+      # Button 3
       - conditions: "{{ action_val == '3_single' }}"
         sequence: !input btn_3_single
       - conditions: "{{ action_val == '3_double' }}"
         sequence: !input btn_3_double
       - conditions: "{{ action_val == '3_long' }}"
         sequence: !input btn_3_long
-      # Nút 4
+      # Button 4
       - conditions: "{{ action_val == '4_single' }}"
         sequence: !input btn_4_single
       - conditions: "{{ action_val == '4_double' }}"
         sequence: !input btn_4_double
       - conditions: "{{ action_val == '4_long' }}"
         sequence: !input btn_4_long
-      # Nút 5
+      # Button 5
       - conditions: "{{ action_val == '5_single' }}"
         sequence: !input btn_5_single
       - conditions: "{{ action_val == '5_double' }}"
         sequence: !input btn_5_double
       - conditions: "{{ action_val == '5_long' }}"
         sequence: !input btn_5_long
-      # Nút 6
+      # Button 6
       - conditions: "{{ action_val == '6_single' }}"
         sequence: !input btn_6_single
       - conditions: "{{ action_val == '6_double' }}"
