@@ -4,11 +4,15 @@ blueprint:
   domain: automation
   input:
     remote_sensor:
-      name: Sonoff Text Sensor
-      description: Chọn cảm biến text (ví dụ text_sensor.sonoff_remote_action)
-      selector:
-        entity:
-          domain: text_sensor
+          name: Sonoff Sensor
+          description: Chọn cảm biến (sensor) có icon mdi:remote
+          selector:
+            entity:
+              domain: sensor # Dùng sensor thay vì text_sensor
+              integration: esphome
+              filter:
+                - attribute: icon
+                  value: "mdi:remote"
     
     # Tạo các nhóm nút (Dưới đây là ví dụ cho Nút 1 và Nút 2, bạn copy tiếp cho đủ 6 nút)
     btn_1_single:
