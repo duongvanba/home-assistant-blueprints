@@ -3,13 +3,13 @@ blueprint:
   description: Automation for swithman R5
   domain: automation
   input:
-      remote_sensor:
-        name: Sonoff Sensor
-        description: Select text sensor
-        selector:
-          entity:
-            domain: sensor
-            integration: esphome
+    remote_sensor:
+      name: Sonoff Sensor
+      description: Select text sensor
+      selector:
+        entity:
+          domain: sensor
+          integration: esphome
     
     # Button groups (Buttons 1–6, each with single/double/long press)
     btn_1_single:
