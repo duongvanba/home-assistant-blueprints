@@ -19,7 +19,9 @@ không bị trigger nhầm.
 
 ### 2. Daily Low Battery Check
 
-File: [low-battery-daily-check.v1.yaml](low-battery-daily-check.v1.yaml)
+File: [low-battery-daily-check.v2.yaml](low-battery-daily-check.v2.yaml) (mới
+nhất). Bản v1 [low-battery-daily-check.v1.yaml](low-battery-daily-check.v1.yaml)
+chỉ hỗ trợ 1 dịch vụ notify duy nhất — không khuyến nghị dùng nữa.
 
 Mỗi sáng quét toàn bộ thiết bị có thông tin pin và gửi thông báo nếu có pin
 yếu. Nguồn pin được quét gồm:
@@ -28,14 +30,19 @@ yếu. Nguồn pin được quét gồm:
 - Bất kỳ entity nào có attribute `battery_level` (Zigbee / Z-Wave / BLE
   tracker thường gắn attribute này lên `device_tracker`, `binary_sensor`...)
 
-**Input chính:**
+**Input chính (v2):**
 
 - `check_time` — giờ chạy hàng ngày (mặc định `08:00`).
 - `battery_threshold` — ngưỡng % pin yếu (mặc định `20`).
-- `notify_service` — tên service notify, **không** kèm tiền tố `notify.`
-  (ví dụ `mobile_app_iphone`). Mặc định `persistent_notification` để test
-  ngay không cần cấu hình.
+- `notify_targets` — **danh sách** tên service notify, **không** kèm tiền tố
+  `notify.`. Thông báo sẽ gửi tới tất cả service trong danh sách (loop bằng
+  `repeat.for_each`). Mặc định `[persistent_notification]`.
 - `exclude_entities` — danh sách entity muốn bỏ qua.
+
+> Lý do v2: `notify.notify` không phải broadcast — nó chỉ trỏ vào 1 platform
+> duy nhất (thường là mobile_app đăng ký đầu tiên). Muốn gửi tới tất cả thiết
+> bị thì phải hoặc tạo notification group trong `configuration.yaml`, hoặc
+> dùng v2 này (loop) để tránh restart và cấu hình thêm.
 
 ## Cách cài đặt
 
