@@ -19,9 +19,12 @@ không bị trigger nhầm.
 
 ### 2. Daily Low Battery Check
 
-File: [low-battery-daily-check.v2.yaml](low-battery-daily-check.v2.yaml) (mới
-nhất). Bản v1 [low-battery-daily-check.v1.yaml](low-battery-daily-check.v1.yaml)
-chỉ hỗ trợ 1 dịch vụ notify duy nhất — không khuyến nghị dùng nữa.
+File: [low-battery-daily-check.v3.yaml](low-battery-daily-check.v3.yaml) (mới
+nhất). Các bản cũ:
+- [low-battery-daily-check.v2.yaml](low-battery-daily-check.v2.yaml) — chạy 1
+  lần/ngày tại 1 giờ cố định, đa đích notify.
+- [low-battery-daily-check.v1.yaml](low-battery-daily-check.v1.yaml) — chỉ hỗ
+  trợ 1 dịch vụ notify duy nhất.
 
 Mỗi sáng quét toàn bộ thiết bị có thông tin pin và gửi thông báo nếu có pin
 yếu. Nguồn pin được quét gồm:
@@ -30,9 +33,10 @@ yếu. Nguồn pin được quét gồm:
 - Bất kỳ entity nào có attribute `battery_level` (Zigbee / Z-Wave / BLE
   tracker thường gắn attribute này lên `device_tracker`, `binary_sensor`...)
 
-**Input chính (v2):**
+**Input chính (v3):**
 
-- `check_time` — giờ chạy hàng ngày (mặc định `08:00`).
+- `interval_pattern` — chu kỳ chạy: mỗi 1/2/3/4/6/8/12/24 giờ (mặc định mỗi
+  1 giờ). Trigger là `time_pattern` nên chạy ở phút 0 đầu mỗi chu kỳ.
 - `battery_threshold` — ngưỡng % pin yếu (mặc định `20`).
 - `notify_targets` — **danh sách** tên service notify, **không** kèm tiền tố
   `notify.`. Thông báo sẽ gửi tới tất cả service trong danh sách (loop bằng

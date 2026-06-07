@@ -1,0 +1,110 @@
+blueprint:
+  name: Low Battery Periodic Check v3
+  description: >
+    Chạy theo chu kỳ (ví dụ mỗi 1 giờ), quét toàn bộ entity có
+    device_class = battery hoặc thuộc tính `battery_level` và gửi thông báo
+    tới nhiều mobile_app nếu có thiết bị dưới ngưỡng pin yếu.
+  domain: automation
+  input:
+    interval_pattern:
+      name: Chu kỳ kiểm tra
+      description: Chọn tần suất chạy (đo bằng giờ).
+      default: "/1"
+      selector:
+        select:
+          options:
+            - { label: "Mỗi 1 giờ",  value: "/1" }
+            - { label: "Mỗi 2 giờ",  value: "/2" }
+            - { label: "Mỗi 3 giờ",  value: "/3" }
+            - { label: "Mỗi 4 giờ",  value: "/4" }
+            - { label: "Mỗi 6 giờ",  value: "/6" }
+            - { label: "Mỗi 8 giờ",  value: "/8" }
+            - { label: "Mỗi 12 giờ", value: "/12" }
+            - { label: "Mỗi 24 giờ (1 lần/ngày, lúc 00:00)", value: "/24" }
+
+    battery_threshold:
+      name: Ngưỡng pin yếu (%)
+      description: Thiết bị có pin <= ngưỡng này sẽ được báo.
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+          mode: slider
+
+    notify_targets:
+      name: Danh sách dịch vụ notify
+      description: >
+        Mỗi dòng là tên một dịch vụ notify, KHÔNG kèm tiền tố `notify.`.
+        Ví dụ `mobile_app_iphone_cua_ba`, `mobile_app_sm_s928b`,
+        `persistent_notification`. Thông báo sẽ được gửi tới TẤT CẢ các
+        dịch vụ trong danh sách.
+      default:
+        - persistent_notification
+      selector:
+        text:
+          multiple: true
+
+    exclude_entities:
+      name: Bỏ qua các entity
+      description: Danh sách entity không muốn kiểm tra (ví dụ pin xe điện, UPS...).
+      default: []
+      selector:
+        entity:
+          multiple: true
+          filter:
+            - device_class: battery
+
+mode: single
+
+trigger:
+  - platform: time_pattern
+    hours: !input interval_pattern
+
+variables:
+  threshold: !input battery_threshold
+  excluded: !input exclude_entities
+  targets: !input notify_targets
+  low_batteries: >
+    {% set ns = namespace(items=[]) %}
+    {% for s in states.sensor
+       if s.attributes.device_class == 'battery'
+       and s.entity_id not in excluded
+       and s.state not in ['unknown', 'unavailable', 'none', '']
+       and s.state | float(-1) >= 0
+       and s.state | float(-1) <= (threshold | float) %}
+      {% set ns.items = ns.items + [
+        {'entity_id': s.entity_id,
+         'name': s.name,
+         'level': s.state | float}
+      ] %}
+    {% endfor %}
+    {% for s in states
+       if s.attributes.battery_level is defined
+       and s.entity_id not in excluded
+       and s.attributes.battery_level | float(-1) >= 0
+       and s.attributes.battery_level | float(-1) <= (threshold | float) %}
+      {% set ns.items = ns.items + [
+        {'entity_id': s.entity_id,
+         'name': s.name,
+         'level': s.attributes.battery_level | float}
+      ] %}
+    {% endfor %}
+    {{ ns.items | sort(attribute='level') }}
+
+condition:
+  - condition: template
+    value_template: "{{ low_batteries | length > 0 }}"
+
+action:
+  - repeat:
+      for_each: "{{ targets }}"
+      sequence:
+        - service: "notify.{{ repeat.item }}"
+          data:
+            title: "Pin yếu ({{ low_batteries | length }} thiết bị)"
+            message: >
+              {% for b in low_batteries -%}
+              - {{ b.name }}: {{ b.level | round(0) }}%
+              {% endfor %}
